@@ -62,3 +62,21 @@ def find_outliers_z_score(data, feature, left=3, right=3, log_scale=False):
 def new_function():
     pass
 
+def find_outliers_quantile(data, feature, left=0.01, right=0.99):
+    """Находит выбросы в данных, используя метод квантилей
+
+    Args:
+        data (DataFrame): Данные
+        feature (str): Колонка
+        left (float, optional): Левый отступ. Defaults to 0.01.
+        right (float, optional): Правый отступ. Defaults to 0.99.
+
+    Returns:
+        DataFrames: Возвращает очищенные данные и выбросы
+    """        
+    x = data[feature]
+    lower_bound = x.quantile(left)
+    upper_bound = x.quantile(right)
+    outliers = data[(x < lower_bound) | (x > upper_bound)]
+    cleaned = data[(x > lower_bound) & (x < upper_bound)]
+    return outliers, cleaned
